@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام إدارة المنتجات | CRUD System</title>
+    <!-- خط Cairo من Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <!-- ربط ملف CSS الخارجي -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div class="background-decor">
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
+    </div>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="brand">
+                <div class="logo-icon">📦</div>
+                <div>
+                    <h1>نظام إدارة المنتجات</h1>
+                    <p>لوحة تحكم احترافية لإدارة المخزون والمبيعات</p>
+                </div>
+            </div>
+            <button id="themeToggleBtn" class="theme-btn" title="تبديل المظهر">
+                <span class="icon">🌙</span>
+            </button>
+        </header>
+
+        <!-- KPI Metrics Cards -->
+        <section class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-info">
+                    <span class="kpi-title">إجمالي المنتجات</span>
+                    <span id="kpiTotalItems" class="kpi-value">0</span>
+                </div>
+                <div class="kpi-icon">📊</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-info">
+                    <span class="kpi-title">القيمة الكلية للمخزون</span>
+                    <span id="kpiTotalValue" class="kpi-value">0 ج.م</span>
+                </div>
+                <div class="kpi-icon">💰</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-info">
+                    <span class="kpi-title">عدد الأقسام</span>
+                    <span id="kpiCategoriesCount" class="kpi-value">0</span>
+                </div>
+                <div class="kpi-icon">🏷️</div>
+            </div>
+        </section>
+
+        <!-- Form Section -->
+        <section class="form-card">
+            <h2 class="section-title">بيانات المنتج</h2>
+            <form id="productForm" onsubmit="return false;">
+                <div class="form-group full-width">
+                    <label for="title">اسم المنتج</label>
+                    <input type="text" id="title" placeholder="مثال: آيفون 15 بروماكس" required>
+                </div>
+
+                <div class="inputs-row">
+                    <div class="form-group">
+                        <label for="price">السعر الأصلي</label>
+                        <input type="number" id="price" placeholder="0" min="0" step="any" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="taxes">الضرائب</label>
+                        <input type="number" id="taxes" placeholder="0" min="0" step="any">
+                    </div>
+                    <div class="form-group">
+                        <label for="ads">الإعلانات</label>
+                        <input type="number" id="ads" placeholder="0" min="0" step="any">
+                    </div>
+                    <div class="form-group">
+                        <label for="discount">الخصم</label>
+                        <input type="number" id="discount" placeholder="0" min="0" step="any">
+                    </div>
+                </div>
+
+                <div class="total-bar" id="totalBar">
+                    <span>الإجمالي للقطعة:</span>
+                    <strong id="totalDisplay">0.00 ج.م</strong>
+                </div>
+
+                <div class="inputs-row mt-15">
+                    <div class="form-group">
+                        <label for="count">الكمية / العدد</label>
+                        <input type="number" id="count" placeholder="1" min="1" max="100" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="category">القسم / التصنيف</label>
+                        <input type="text" id="category" placeholder="مثال: هواتف" required>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" id="submitBtn" class="btn btn-primary">إضافة المنتج</button>
+                    <button type="button" id="cancelEditBtn" class="btn btn-secondary hidden">إلغاء التعديل</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Data Table & Search Section -->
+        <section class="table-card">
+            <div class="table-header-controls">
+                <h2 class="section-title">قائمة المنتجات المخزنة</h2>
+                <div class="export-btns">
+                    <button id="exportCsvBtn" class="btn btn-outline">تصدير CSV</button>
+                    <button id="deleteAllBtn" class="btn btn-danger hidden">حذف الكل (0)</button>
+                </div>
+            </div>
+
+            <!-- Search Controls -->
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="ابحث هنا...">
+                <div class="search-buttons">
+                    <button id="searchTitleBtn" class="btn btn-search active">البحث بالاسم</button>
+                    <button id="searchCategoryBtn" class="btn btn-search">البحث بالقسم</button>
+                </div>
+            </div>
+
+            <!-- Products Table -->
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>المنتج</th>
+                            <th>السعر</th>
+                            <th>الضرائب</th>
+                            <th>الإعلانات</th>
+                            <th>الخصم</th>
+                            <th>الإجمالي</th>
+                            <th>القسم</th>
+                            <th>تعديل</th>
+                            <th>حذف</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productsTbody">
+                        <!-- البيانات بتنزل هنا بالـ JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div id="noDataMessage" class="no-data hidden">
+                <span>📭</span>
+                <p>لا توجد منتجات مسجلة حالياً</p>
+            </div>
+        </section>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast hidden"></div>
+
+    <!-- ربط ملف JavaScript الخارجي -->
+    <script src="js/script.js"></script>
+</body>
+</html>
